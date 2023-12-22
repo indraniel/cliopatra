@@ -10,7 +10,7 @@ I could not find the original source code on GitHub.
 
 ## LICENSE
 
-I could not asertain what the original license to [cliopatra][0] was.  Currently, for this fork, I've used the [ISC License][2].
+I could not asertain what the original license to [cliopatra][0] was; currently, for this fork, I've used the [ISC License][2].
 
 [0]: https://clojars.org/narkisr/cliopatra
 [1]: https://github.com/clojure/tools.cli
