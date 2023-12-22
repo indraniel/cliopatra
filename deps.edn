@@ -1,0 +1,14 @@
+{:paths ["src"]
+ :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"}
+             "clojars" {:url "https://repo.clojars.org/"}}
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        org.clojure/tools.cli {:mvn/version "1.0.219"}}
+ :aliases {:repl {:extra-deps {nrepl/nrepl {:mvn/version "1.0.0"}
+                               cider/cider-nrepl {:mvn/version "0.39.0"}}
+                  :main-opts ["-m" "nrepl.cmdline"
+                              "--bind" "0.0.0.0"
+                              "--port" "8888"
+                              "--middleware" "[cider.nrepl/cider-middleware]"
+                              "-i"]}
+           :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.6" :git/sha "8e78bcc"}}
+                   :ns-default build}}}
