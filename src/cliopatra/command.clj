@@ -47,8 +47,6 @@
              usage-banner#         (:summary output-of-parse-opts#)
              errors#               (:errors output-of-parse-opts#)
              usage#                (format "%s\n\n%s" ~(or usage-heading doc-string) usage-banner#)]
-         (comment tap> (format "parsed-opts#: %s" parsed-opts#))
-         (comment tap> (format "arg-values#: %s" arg-values#))
          (try
            (if-let [missing#
                     (seq
