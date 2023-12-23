@@ -14,10 +14,16 @@
 (defn required-option? [option]
   (-> (drop-while (partial not= :required) option) next first))
 
+(defn trunc-multi-word-string [s]
+  (if (re-find #"\s+" s)
+    (first (str/split s #"\s+"))
+    s))
+
 (defn opt-spec->opt-name-str [op]
   (-> (take-while #(= \- (first %)) op)
       last
-      (str/replace #"^-*" "")))
+      (str/replace #"^-*" "")
+      trunc-multi-word-string))
 
 (defn required-options [options]
   (keep (fn [op] (when (required-option? op)
