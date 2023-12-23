@@ -40,12 +40,15 @@
                                    ::usage (or usage-heading doc-string)
                                    ::opts-spec opts-spec'})
        [args#]
-       (let [[parsed-opts# arg-values# usage-banner#]
-             (apply cli/parse-opts
-                    (vec args#)
-                    (conj ~opts-spec ["-h" "--[no-]help" "Print help"]))
-             usage# (format "%s\n\n%s" ~(or usage-heading doc-string)
-                            usage-banner#)]
+       (let [assembled-opts-spec#  (conj ~opts-spec ["-h" "--[no-]help" "Print help"])
+             output-of-parse-opts# (cli/parse-opts (vec args#) assembled-opts-spec#)
+             parsed-opts#          (:options output-of-parse-opts#)
+             arg-values#           (:arguments output-of-parse-opts#)
+             usage-banner#         (:summary output-of-parse-opts#)
+             errors#               (:errors output-of-parse-opts#)
+             usage#                (format "%s\n\n%s" ~(or usage-heading doc-string) usage-banner#)]
+         (comment tap> (format "parsed-opts#: %s" parsed-opts#))
+         (comment tap> (format "arg-values#: %s" arg-values#))
          (try
            (if-let [missing#
                     (seq
