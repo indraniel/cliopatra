@@ -11,4 +11,5 @@
                               "--middleware" "[cider.nrepl/cider-middleware]"
                               "-i"]}
            :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.6" :git/sha "8e78bcc"}}
-                   :ns-default build}}}
+                   :ns-default build}
+           :cli   {:main-opts ["-m" "cliopatra.core"]}}}
