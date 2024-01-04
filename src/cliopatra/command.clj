@@ -1,7 +1,8 @@
 (ns cliopatra.command
   (:require [cliopatra.impl :as impl]
             [clojure.set :as set]
-            [clojure.tools.cli :as cli]))
+            [clojure.tools.cli :as cli]
+            [clojure.string :as string]))
 
 (defmacro defcommand
   "Defines a var with a function for use with cliopatra.command/delegate.
@@ -54,13 +55,15 @@
                       (set (impl/required-options ~opts-spec))
                       (set (keys parsed-opts#))))]
              (impl/throw-usage-exception (impl/format-missing missing#))
-             (if (:help parsed-opts#)
-               (println usage#)
-               (let [~'usage usage#
-                     ~(or bind-args-to '[& _]) arg-values#
-                     {:keys [~@(impl/opts-spec-keys opts-spec')]
-                      :as ~'opts} parsed-opts#]
-                 ~@body)))
+             (cond
+               (:help parsed-opts#) (println usage#)
+               errors# (printf "[err] The following cli parsing errors occurred:\n%s\n" (string/join \newline errors#))
+               :else (let [~'usage usage#
+                           ~(or bind-args-to '[& _]) arg-values#
+                           {:keys [~@(impl/opts-spec-keys opts-spec')]
+                            :as ~'opts} parsed-opts#]
+                       ~@body)))
+
            (catch RuntimeException ex#
              (if (= (.getCause ex#) impl/usage-exception-cause)
                (do
