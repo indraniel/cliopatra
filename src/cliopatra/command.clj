@@ -1,6 +1,5 @@
 (ns cliopatra.command
   (:require [cliopatra.impl :as impl]
-            [clojure.set :as set]
             [clojure.tools.cli :as cli]
             [clojure.string :as string]))
 
@@ -49,20 +48,15 @@
              errors#               (:errors output-of-parse-opts#)
              usage#                (format "%s\n\n%s" ~(or usage-heading doc-string) usage-banner#)]
          (try
-           (if-let [missing#
-                    (seq
-                     (set/difference
-                      (set (impl/required-options ~opts-spec))
-                      (set (keys parsed-opts#))))]
-             (impl/throw-usage-exception (impl/format-missing missing#))
-             (cond
-               (:help parsed-opts#) (println usage#)
-               errors# (printf "[err] The following cli parsing errors occurred:\n%s\n" (string/join \newline errors#))
-               :else (let [~'usage usage#
-                           ~(or bind-args-to '[& _]) arg-values#
-                           {:keys [~@(impl/opts-spec-keys opts-spec')]
-                            :as ~'opts} parsed-opts#]
-                       ~@body)))
+           (cond
+             (:help parsed-opts#) (println usage#)
+             errors# (let [msg (format "[err] The following cli parsing errors occurred:\n%s\n" (string/join \newline errors#))]
+                       impl/throw-usage-exception msg)
+             :else (let [~'usage usage#
+                         ~(or bind-args-to '[& _]) arg-values#
+                         {:keys [~@(impl/opts-spec-keys opts-spec')]
+                          :as ~'opts} parsed-opts#]
+                     ~@body))
 
            (catch RuntimeException ex#
              (if (= (.getCause ex#) impl/usage-exception-cause)
