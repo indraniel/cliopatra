@@ -50,8 +50,8 @@
          (try
            (cond
              (:help parsed-opts#) (println usage#)
-             errors# (let [msg# (format "[err] The following cli parsing errors occurred:\n%s\n" (string/join \newline errors#))]
-                       impl/throw-usage-exception msg#)
+             (some? errors#) (let [msg# (format "The following cli parsing errors occurred:\n%s\n" (string/join \newline errors#))]
+                              (impl/throw-usage-exception msg#))
              :else (let [~'usage usage#
                          ~(or bind-args-to '[& _]) arg-values#
                          {:keys [~@(impl/opts-spec-keys opts-spec')]
