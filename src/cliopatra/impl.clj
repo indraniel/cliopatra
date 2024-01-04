@@ -19,11 +19,16 @@
     (first (str/split s #"\s+"))
     s))
 
+(defn id-option? [option]
+  (-> (drop-while (partial not= :id) option) next first))
+
 (defn opt-spec->opt-name-str [op]
-  (-> (take-while #(= \- (first %)) op)
-      last
-      (str/replace #"^-*" "")
-      trunc-multi-word-string))
+  (if-let [id-opt-val (id-option? op)]
+    (name id-opt-val)
+    (-> (take-while #(= \- (first %)) op)
+        last
+        (str/replace #"^-*" "")
+        trunc-multi-word-string)))
 
 (defn required-options [options]
   (keep (fn [op] (when (required-option? op)
